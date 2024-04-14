@@ -52,9 +52,10 @@ class or_gpla_choose_file(bpy.types.Operator, ImportHelper):
         try:
             FilePath = self.filepath
             filename, extension = os.path.splitext(self.filepath)
+            if (extension != ".gpla"):
+                extension = ".gpla"
+                FilePath = FilePath + ".gpla"
             self.report({"INFO"}, FilePath)
-            self.report({"INFO"}, filename)
-            self.report({"INFO"}, extension)
         except:
             flename = None
             extension = None
