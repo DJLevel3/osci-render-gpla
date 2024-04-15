@@ -69,7 +69,10 @@ class or_gpla_close_file(bpy.types.Operator):
     bl_description = "Close File"
     
     def execute(self,context):
-        return close_file
+        if (close_file == False):
+            return {"FINISHED"}
+        else:
+            return {"CANCELLED"}
     
 class or_gpla_save(bpy.types.Operator):
     bl_label = "Save Line Art"
@@ -98,7 +101,7 @@ def close_file():
     global extension
     filename = None
     extension = None
-    return {"FINISHED"}
+    return 0
 
 def append_matrix(object_info, obj):
     camera_space = bpy.context.scene.camera.matrix_world.inverted() @ obj.matrix_world
@@ -115,11 +118,11 @@ def save_scene_to_file(scene):
     scene_info = {"frames": []}
     for frame in range(scene.frame_start, scene.frame_end):
         frame_info = {"objects": []}
-        scene.frame_current = frame
+        scene.frame_set(frame)
         for obj in bpy.data.objects:
             if obj.visible_get() and obj.type == 'GPENCIL':
                 object_info = {"name": obj.name}
-                strokes = obj.data.layers.active.frames.data.active_frame.strokes                    
+                strokes = obj.data.layers.active.frames.data.frames[frame].strokes                    
                 
                 object_info["vertices"] = []
                 for stroke in strokes:
@@ -143,7 +146,7 @@ def save_scene_to_file(scene):
     else:
         return 1
         
-    scene.frame_current = returnFrame
+    scene.frame_set(returnFrame)
     return 0
 
 operations = [or_gpla_export, or_gpla_choose_file, or_gpla_close_file, or_gpla_save]
