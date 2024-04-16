@@ -116,13 +116,13 @@ def save_scene_to_file(scene):
     returnFrame = scene.frame_current
     
     scene_info = {"frames": []}
-    for frame in range(scene.frame_start, scene.frame_end):
+    for frame in range(0, scene.frame_end - scene.frame_start):
         frame_info = {"objects": []}
-        scene.frame_set(frame)
+        scene.frame_set(frame + scene.frame_start)
         for obj in bpy.data.objects:
             if obj.visible_get() and obj.type == 'GPENCIL':
                 object_info = {"name": obj.name}
-                strokes = obj.data.layers.active.frames.data.frames[frame].strokes                    
+                strokes = obj.data.layers.active.frames.data.frames[frame+1].strokes                    
                 
                 object_info["vertices"] = []
                 for stroke in strokes:
